@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_prayer_time"
+        android:icon="@drawable/calendar"
+        android:title="Prayer Time" />
+    <item
+        android:id="@+id/nav_qibla"
+        android:icon="@drawable/location"
+        android:title="Qibla" />
+</menu>
