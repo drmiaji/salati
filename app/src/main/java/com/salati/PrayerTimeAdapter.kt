@@ -44,14 +44,14 @@ class PrayerTimeAdapter(private var prayers: List<PrayerTime>, private val conte
             prayerNameText.text = prayer.name
             prayerTimeText.text = prayer.time
 
-            val isAzanEnabled = sharedPreferences.getBoolean("${prayer.name}_azan", true)
+            var isAzanEnabled = sharedPreferences.getBoolean("${prayer.name}_azan", true)
             updateAudioIcon(isAzanEnabled)
 
             audioIcon.setOnClickListener {
-                val newStatus = !isAzanEnabled
-                sharedPreferences.edit { putBoolean("${prayer.name}_azan", newStatus) }
-                updateAudioIcon(newStatus)
-                showToast(newStatus, prayer.name)
+                isAzanEnabled = !isAzanEnabled
+                sharedPreferences.edit { putBoolean("${prayer.name}_azan", isAzanEnabled) }
+                updateAudioIcon(isAzanEnabled)
+                showToast(isAzanEnabled, prayer.name)
             }
         }
 
