@@ -3,4 +3,5 @@
     <string name="no_prayer_time_available">No prayer time available</string>
     <string name="default_time">--:--</string>
     <string name="prayer_time_now">Next prayer time:</string>
+    <string name="audio_icon">Audio Icon</string>
 </resources>

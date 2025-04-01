@@ -29,6 +29,14 @@
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/audioIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_sound_on"
+            android:contentDescription="@string/audio_icon" />
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

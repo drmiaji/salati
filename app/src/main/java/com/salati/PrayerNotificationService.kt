@@ -64,9 +64,9 @@ class PrayerNotificationService {
 
         // Choose the appropriate Adhan based on the prayer
         val adhanResource = if (prayerName.equals("Fajr", true)) {
-            R.raw.adanvoice1 // Fajr
+            R.raw.azan_fajr // Fajr
         } else {
-            R.raw.adanvoice2 // Other prayers
+            R.raw.azan_all // Other prayers
         }
 
         // Initialize MediaPlayer and start playing the selected Adhan

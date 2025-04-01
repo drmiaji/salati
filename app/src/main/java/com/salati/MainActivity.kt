@@ -21,6 +21,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -31,8 +32,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var prayerAlarmScheduler: PrayerAlarmScheduler
     private lateinit var prayerNotificationService: PrayerNotificationService
 
-    private val locationPermissionRequest = 1001
-    private val notificationPermissionRequest = 1002
+    private val PERMISSION_REQUEST_CODE = 1
 
     private lateinit var currentPrayerText: TextView
     private lateinit var currentPrayerTime: TextView
@@ -56,15 +56,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
         // Initialize UI components
         initializeUI()
 
         // Initialize Fused Location and Alarm Scheduler
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         prayerAlarmScheduler = PrayerAlarmScheduler(this)
-        prayerNotificationService =
-            PrayerNotificationService() // Initialize the notification service
+        prayerNotificationService = PrayerNotificationService() // Initialize the notification service
 
         // Setup Observers
         setupObservers()
@@ -101,17 +99,9 @@ class MainActivity : AppCompatActivity() {
         nextPrayerNameTextView = findViewById(R.id.nextPrayerName)
         prayerTimesRecyclerView = findViewById<RecyclerView>(R.id.prayerTimesRecyclerView).apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
-            prayerTimeAdapter = PrayerTimeAdapter()
+            prayerTimeAdapter = PrayerTimeAdapter(emptyList(), this@MainActivity) // Pass empty list initially
             adapter = prayerTimeAdapter
         }
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-//            if (!AlarmManager.canScheduleExactAlarms(this)) {
-//                // Show a dialog or prompt the user to enable the permission in settings
-//                Intent intent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
-//                startActivity(intent);
-//            }
-//        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -138,8 +128,6 @@ class MainActivity : AppCompatActivity() {
                         it.name,
                         it.time
                     )
-
-
                 }
             } else {
                 timeUntilNextPrayerText.text = "00:00:00"
@@ -152,8 +140,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updatePrayerTimesUI(prayers: List<PrayerTime>) {
-        prayerTimeAdapter.updatePrayers(prayers)
-        prayers.forEach { prayer ->
+        val updatedPrayers = prayers.map { prayer ->
+            if (prayer.name == "Maghrib") {
+                val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
+                val date = sdf.parse(prayer.time) ?: Date() // Use current date if parsing fails
+                val calendar = Calendar.getInstance().apply {
+                    time = date
+                    add(Calendar.MINUTE, 4)
+                }
+                prayer.copy(time = sdf.format(calendar.time))
+            } else {
+                prayer
+            }
+        }
+        prayerTimeAdapter.updatePrayers(updatedPrayers)
+        updatedPrayers.forEach { prayer ->
             prayerAlarmScheduler.schedulePrayerAlarm(prayer)
         }
     }
@@ -176,6 +177,7 @@ class MainActivity : AppCompatActivity() {
                 LOCATION_PERMISSION_REQUEST
             )
         } else {
+            // Permission is already granted, proceed with your logic
             fetchCurrentLocation()
         }
     }
@@ -240,14 +242,17 @@ class MainActivity : AppCompatActivity() {
         when (requestCode) {
             LOCATION_PERMISSION_REQUEST -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission granted, proceed with your logic
                     fetchCurrentLocation()
                 } else {
+                    // Permission denied, handle the case
                     showToast("Location permission is required for prayer time calculation")
                 }
             }
 
             NOTIFICATION_PERMISSION_REQUEST -> {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    // Permission denied, handle the case
                     showToast("Notification permission is required for prayer alerts")
                 }
             }
@@ -287,7 +292,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Play the adhan sound for the prayer
-
 
     // Helper function to check if the current time is the prayer time
     private fun isTimeForPrayer(prayerTime: String): Boolean {
