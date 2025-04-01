@@ -1,16 +1,19 @@
 package com.salati
 
 import android.Manifest
+import android.annotation.SuppressLint
+import android.app.AlarmManager
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.util.Log
+import android.provider.Settings
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -29,8 +32,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var prayerAlarmScheduler: PrayerAlarmScheduler
     private lateinit var prayerNotificationService: PrayerNotificationService
 
-    private val LOCATION_PERMISSION_REQUEST = 1001
-    private val NOTIFICATION_PERMISSION_REQUEST = 1002
+    private val locationPermissionRequest = 1001
+    private val notificationPermissionRequest = 1002
 
     private lateinit var currentPrayerText: TextView
     private lateinit var currentPrayerTime: TextView
@@ -44,6 +47,11 @@ class MainActivity : AppCompatActivity() {
     private var mediaPlayer: MediaPlayer? = null // MediaPlayer instance
     private var isAdhanPlayed = false // To track if Adhan has already been played
     private var lastPrayerPlayed: String? = null // Track last played prayer name
+
+    companion object {
+        const val LOCATION_PERMISSION_REQUEST = 1001
+        const val NOTIFICATION_PERMISSION_REQUEST = 1002
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,8 +103,17 @@ class MainActivity : AppCompatActivity() {
             prayerTimeAdapter = PrayerTimeAdapter()
             adapter = prayerTimeAdapter
         }
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+//            if (!AlarmManager.canScheduleExactAlarms(this)) {
+//                // Show a dialog or prompt the user to enable the permission in settings
+//                Intent intent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+//                startActivity(intent);
+//            }
+//        }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupObservers() {
         viewModel.prayerTimes.observe(this) { prayers ->
             updatePrayerTimesUI(prayers)
@@ -181,6 +198,7 @@ class MainActivity : AppCompatActivity() {
         ) == PackageManager.PERMISSION_GRANTED
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun hasNotificationPermission(): Boolean {
         return ContextCompat.checkSelfPermission(
             this,
@@ -248,6 +266,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun startCountdown() {
         val countdownTimer = object : CountDownTimer(countdownTime, 1000) {
+            @SuppressLint("DefaultLocale")
             override fun onTick(millisUntilFinished: Long) {
                 val hours = (millisUntilFinished / 3600000).toInt()
                 val minutes = (millisUntilFinished % 3600000 / 60000).toInt()
@@ -256,6 +275,7 @@ class MainActivity : AppCompatActivity() {
                 timeUntilNextPrayerText.text = String.format("%02d:%02d:%02d", hours, minutes, seconds)
             }
 
+            @SuppressLint("SetTextI18n")
             override fun onFinish() {
                 timeUntilNextPrayerText.text = "00:00:00"
             }
@@ -271,5 +291,4 @@ class MainActivity : AppCompatActivity() {
         val currentTime = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date())
         return currentTime == prayerTime
     }
-
 }

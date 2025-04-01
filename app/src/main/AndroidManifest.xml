@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" /> <!-- Boot Permission to handle reboots -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
 
     <application
         android:allowBackup="true"
@@ -27,8 +27,7 @@
         <activity
             android:name=".SplashActivity"
             android:exported="true"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:label="@string/app_name">
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -50,7 +49,8 @@
         <receiver
             android:name=".BootReceiver"
             android:enabled="true"
-            android:exported="false">
+            android:exported="false"
+            tools:ignore="Instantiatable">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
 
@@ -60,7 +60,8 @@
         <receiver
             android:name=".PrayerNotificationService$StopAdhanReceiver"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="true"
+            tools:ignore="MissingClass" />
     </application>
 
 </manifest>
