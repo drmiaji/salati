@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
@@ -31,6 +32,14 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+    buildFeatures {
+        compose = true
+    }
+
+//    @Suppress("UnstableApiUsage")
+//    composeOptions {
+//        kotlinCompilerExtensionVersion = "1.5.15" // Match your Compose version
+//    }
 }
 
 dependencies {
@@ -46,4 +55,11 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation (libs.gms.play.services.location)
+
+    implementation(libs.androidx.constraintlayout.compose)
+    implementation(libs.androidx.material3)
+    debugImplementation(libs.androidx.ui.tooling)
+    implementation(libs.compose.foundation)
+
+    implementation("androidx.core:core-splashscreen:1.0.1")
 }

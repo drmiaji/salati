@@ -25,7 +25,7 @@
             android:exported="false" />
         <!-- Main Activity -->
         <activity
-            android:name=".SplashActivity"
+            android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
@@ -33,11 +33,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".MainActivity"
-            android:exported="false">
 
-        </activity> <!-- Alarm Receiver for Prayer Notifications -->
         <receiver
             android:name=".PrayerAlarmReceiver"
             android:enabled="true"
