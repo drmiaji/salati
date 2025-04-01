@@ -7,12 +7,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.batoulapps.adhan.*
-import com.batoulapps.adhan.data.DateComponents
 import com.batoulapps.adhan.CalculationMethod
-import java.util.*
+import com.batoulapps.adhan.data.DateComponents
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.util.TimeZone
+import java.util.*
 
 class PrayerTimeViewModel : ViewModel() {
 
@@ -48,10 +47,18 @@ class PrayerTimeViewModel : ViewModel() {
 
             val prayers = listOf(
                 PrayerTime("Fajr", formatter.format(prayerTimes.fajr), prayerTimes.fajr.time),
-                PrayerTime("Sunrise", formatter.format(prayerTimes.sunrise), prayerTimes.sunrise.time),
+                PrayerTime(
+                    "Sunrise",
+                    formatter.format(prayerTimes.sunrise),
+                    prayerTimes.sunrise.time
+                ),
                 PrayerTime("Dhuhr", formatter.format(prayerTimes.dhuhr), prayerTimes.dhuhr.time),
                 PrayerTime("Asr", formatter.format(prayerTimes.asr), prayerTimes.asr.time),
-                PrayerTime("Maghrib", formatter.format(prayerTimes.maghrib), prayerTimes.maghrib.time),
+                PrayerTime(
+                    "Maghrib",
+                    formatter.format(prayerTimes.maghrib),
+                    prayerTimes.maghrib.time
+                ),
                 PrayerTime("Isha", formatter.format(prayerTimes.isha), prayerTimes.isha.time)
             )
 
@@ -93,7 +100,14 @@ class PrayerTimeViewModel : ViewModel() {
                     val minutes = (remainingTime / (1000 * 60)) % 60
                     val seconds = (remainingTime / 1000) % 60
 
-                    _timeUntilNextPrayer.postValue(String.format("%02d:%02d:%02d", hours, minutes, seconds))
+                    _timeUntilNextPrayer.postValue(
+                        String.format(
+                            "%02d:%02d:%02d",
+                            hours,
+                            minutes,
+                            seconds
+                        )
+                    )
                     handler.postDelayed(this, 1000)
                 } else {
                     _timeUntilNextPrayer.postValue("00:00:00")

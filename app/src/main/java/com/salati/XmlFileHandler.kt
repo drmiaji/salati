@@ -1,4 +1,5 @@
 package com.salati
+
 import android.content.Context
 import android.util.Log
 import org.xmlpull.v1.XmlPullParser
@@ -42,10 +43,12 @@ class XmlFileHandler(private val context: Context) {
                             Log.d("XMLParsing", "Start tag ${parser.name}")
                             // Process the start tag and its attributes
                         }
+
                         XmlPullParser.TEXT -> {
                             Log.d("XMLParsing", "Text ${parser.text}")
                             // Process text inside a tag
                         }
+
                         XmlPullParser.END_TAG -> {
                             Log.d("XMLParsing", "End tag ${parser.name}")
                             // Process end tag

@@ -3,45 +3,45 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:background="@drawable/backgroundpng">
+    android:background="@drawable/backgroundpng"
+    android:padding="16dp">
 
     <!-- Qibla Direction Text -->
     <TextView
         android:id="@+id/qiblaDirectionText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
         android:text="Qibla Direction: 0°"
-        android:textSize="24sp"
-        android:textColor="@android:color/white"
-        android:textStyle="bold"
         android:textAlignment="center"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@android:color/white"
+        android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="50dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Compass Image -->
     <ImageView
         android:id="@+id/qiblaCompass"
         android:layout_width="250dp"
         android:layout_height="250dp"
+        android:layout_marginTop="30dp"
         android:src="@drawable/dial"
-        app:layout_constraintTop_toBottomOf="@id/qiblaDirectionText"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/bottomNav"
-        android:layout_marginTop="30dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/qiblaDirectionText" />
 
     <!-- Bottom Navigation Bar -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@color/trns"
         app:itemIconTint="@color/green"
         app:itemTextColor="@color/green"
-        android:background="@color/trns"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_nav_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

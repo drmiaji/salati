@@ -1,4 +1,3 @@
 package com.salati
 
-class BootReceiver {
-}
+class BootReceiver

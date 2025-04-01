@@ -47,6 +47,7 @@ class QiblaActivity : AppCompatActivity() {
                     // Keep the current activity as it is (Qibla Activity)
                     true
                 }
+
                 R.id.nav_prayer_time -> {
                     // Switch to MainActivity when the Prayer Time item is clicked
                     val intent = Intent(this, MainActivity::class.java)
@@ -54,6 +55,7 @@ class QiblaActivity : AppCompatActivity() {
                     finish() // Close current activity if desired
                     true
                 }
+
                 else -> false
             }
         }
@@ -64,8 +66,16 @@ class QiblaActivity : AppCompatActivity() {
         qiblaCompass = findViewById(R.id.qiblaCompass)
 
         // Request location permission if not granted
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                1
+            )
         } else {
             getCurrentLocation()
         }
