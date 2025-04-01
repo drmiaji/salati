@@ -43,8 +43,9 @@ class QiblaActivity : AppCompatActivity() {
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_qibla -> {
-                    // Optionally, perform any specific action when Qibla is clicked
-                    // Keep the current activity as it is (Qibla Activity)
+                    val intent = Intent(this, CompassActivity::class.java)
+                    startActivity(intent)
+                    finish()
                     true
                 }
 

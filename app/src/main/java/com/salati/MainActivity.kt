@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
 
                 R.id.nav_qibla -> {
                     // Navigate to Qibla activity
-                    val intent = Intent(this, QiblaActivity::class.java)
+                    val intent = Intent(this, CompassActivity::class.java)
                     startActivity(intent)
                     return@setOnItemSelectedListener true
                 }

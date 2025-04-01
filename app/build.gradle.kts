@@ -35,11 +35,6 @@ android {
     buildFeatures {
         compose = true
     }
-
-//    @Suppress("UnstableApiUsage")
-//    composeOptions {
-//        kotlinCompilerExtensionVersion = "1.5.15" // Match your Compose version
-//    }
 }
 
 dependencies {
@@ -61,5 +56,11 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     implementation(libs.compose.foundation)
 
-    implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.material)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.runtime.livedata)
+
 }
