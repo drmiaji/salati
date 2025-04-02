@@ -44,6 +44,12 @@ class PrayerNotificationService {
         }
         val mutePendingIntent: PendingIntent = PendingIntent.getBroadcast(context, 0, muteIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
+        // Intent to handle notification dismissal
+        val dismissIntent = Intent(context, NotificationDismissedReceiver::class.java).apply {
+            action = "com.salati.NOTIFICATION_DISMISSED"
+        }
+        val dismissPendingIntent: PendingIntent = PendingIntent.getBroadcast(context, 0, dismissIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+
         // Create the notification
         val notification = NotificationCompat.Builder(context, "prayer_channel")
             .setContentTitle("Time for $prayerName")
@@ -51,6 +57,7 @@ class PrayerNotificationService {
             .setSmallIcon(R.drawable.notification) // Ensure this icon exists
             .setAutoCancel(true) // Notification will be removed when clicked
             .addAction(R.drawable.ic_sound_off, "Mute Azan", mutePendingIntent) // Add mute action
+            .setDeleteIntent(dismissPendingIntent) // Set the delete intent
             .build()
 
         // Show the notification
@@ -107,6 +114,18 @@ class PrayerNotificationService {
         override fun onReceive(context: Context, intent: Intent) {
             // Handle stopping the Adhan sound
             Toast.makeText(context, "Azan stopped", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    class NotificationDismissedReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            // Stop the Azan sound
+            val serviceIntent = Intent(context, PrayerNotificationService::class.java)
+            context.stopService(serviceIntent)
+
+            // Reset the notification flag
+            val prayerNotificationService = PrayerNotificationService()
+            prayerNotificationService.resetNotificationFlag()
         }
     }
 }

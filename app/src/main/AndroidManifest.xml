@@ -20,9 +20,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Salati"
         tools:targetApi="33">
-        <activity
-            android:name=".activity.QiblaActivity"
-            android:exported="false" />
         <activity android:name=".activity.CompassActivity" />
         <!-- Main Activity -->
         <activity

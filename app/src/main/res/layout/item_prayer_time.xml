@@ -3,38 +3,44 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="2dp">
+    android:layout_margin="5dp"
+    android:backgroundTint="@color/lightBlue"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"> <!-- Soft background color -->
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/darkBlue"
+        android:background="@color/softBlue"
+        android:clipToPadding="false"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="16dp">
+        android:padding="12dp">
 
         <TextView
             android:id="@+id/prayerNameText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textColor="@color/white"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textSize="18sp"
+            android:textStyle="bold" /> <!-- Ensure text doesn't overflow -->
 
         <TextView
             android:id="@+id/prayerTimeText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
             android:textColor="@color/white"
-            android:textSize="16sp" />
+            android:textSize="18sp" /> <!-- Space between text and icon -->
 
         <ImageView
             android:id="@+id/audioIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="12dp"
             android:contentDescription="@string/audio_icon"
             android:src="@drawable/ic_sound_on" />
     </LinearLayout>

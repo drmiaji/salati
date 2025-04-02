@@ -68,8 +68,7 @@ class MainActivity : AppCompatActivity() {
         // Initialize Fused Location and Alarm Scheduler
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         prayerAlarmScheduler = PrayerAlarmScheduler(this)
-        prayerNotificationService =
-            PrayerNotificationService() // Initialize the notification service
+        prayerNotificationService = PrayerNotificationService() // Initialize the notification service
 
         // Setup Observers
         setupObservers()
@@ -106,8 +105,7 @@ class MainActivity : AppCompatActivity() {
         nextPrayerNameTextView = findViewById(R.id.nextPrayerName)
         prayerTimesRecyclerView = findViewById<RecyclerView>(R.id.prayerTimesRecyclerView).apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
-            prayerTimeAdapter =
-                PrayerTimeAdapter(emptyList(), this@MainActivity) // Pass empty list initially
+            prayerTimeAdapter = PrayerTimeAdapter(emptyList(), this@MainActivity) // Pass empty list initially
             adapter = prayerTimeAdapter
         }
     }

@@ -5,4 +5,6 @@
     <color name="green">#209B4D</color>
     <color name="trns">#001C2F23</color>
     <color name="bsvk">#007C7C</color>
+    <color name="lightBlue">#6FA3E0</color> <!-- Light blue for CardView background -->
+    <color name="softBlue">#4B79A1</color>  <!-- Soft blue for inner layout -->
 </resources>
