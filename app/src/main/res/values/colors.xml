@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="colorPrimary">#FF0000</color> <!-- Replace with your desired color -->
+    <color name="colorSecondary">#00FF00</color> <!-- Replace with your desired color -->
     <color name="white">#FFFFFFFF</color>
     <color name="darkBlue">#1C2F23</color>
     <color name="green">#209B4D</color>
