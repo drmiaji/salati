@@ -1,4 +1,4 @@
-package com.salati
+package com.salati.utils
 
 import android.os.Handler
 import android.os.Looper
@@ -102,6 +102,7 @@ class PrayerTimeViewModel : ViewModel() {
 
                     _timeUntilNextPrayer.postValue(
                         String.format(
+                            Locale.getDefault(),
                             "%02d:%02d:%02d",
                             hours,
                             minutes,

@@ -3,9 +3,9 @@
     <item
         android:id="@+id/nav_prayer_time"
         android:icon="@drawable/calendar"
-        android:title="Prayer Time" />
+        android:title="@string/prayer_time" />
     <item
         android:id="@+id/nav_qibla"
         android:icon="@drawable/location"
-        android:title="Qibla" />
+        android:title="@string/qibla" />
 </menu>

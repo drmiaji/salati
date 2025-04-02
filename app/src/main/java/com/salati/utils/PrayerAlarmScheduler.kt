@@ -1,10 +1,11 @@
-package com.salati
+package com.salati.utils
 
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import com.salati.receiver.PrayerAlarmReceiver
 import java.util.Calendar
 
 class PrayerAlarmScheduler(private val context: Context) {
@@ -36,27 +37,11 @@ class PrayerAlarmScheduler(private val context: Context) {
         }
 
         // Scheduling alarm based on API level
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            // For Android 6.0 (API 23) and above, use setExactAndAllowWhileIdle
-            alarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                calendar.timeInMillis,
-                pendingIntent
-            )
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            // For Android 4.4 (API 19) and above, use setExact
-            alarmManager.setExact(
-                AlarmManager.RTC_WAKEUP,
-                calendar.timeInMillis,
-                pendingIntent
-            )
-        } else {
-            // For devices below Android 4.4 (API 19), use set
-            alarmManager.set(
-                AlarmManager.RTC_WAKEUP,
-                calendar.timeInMillis,
-                pendingIntent
-            )
-        }
+        // For Android 6.0 (API 23) and above, use setExactAndAllowWhileIdle
+        alarmManager.setExactAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            pendingIntent
+        )
     }
 }

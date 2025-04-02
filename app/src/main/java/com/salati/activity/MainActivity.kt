@@ -1,4 +1,4 @@
-package com.salati
+package com.salati.activity
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -20,6 +20,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.salati.utils.PrayerAlarmScheduler
+import com.salati.service.PrayerNotificationService
+import com.salati.utils.PrayerTime
+import com.salati.utils.PrayerTimeAdapter
+import com.salati.utils.PrayerTimeViewModel
+import com.salati.R
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -62,7 +68,8 @@ class MainActivity : AppCompatActivity() {
         // Initialize Fused Location and Alarm Scheduler
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         prayerAlarmScheduler = PrayerAlarmScheduler(this)
-        prayerNotificationService = PrayerNotificationService() // Initialize the notification service
+        prayerNotificationService =
+            PrayerNotificationService() // Initialize the notification service
 
         // Setup Observers
         setupObservers()
@@ -99,7 +106,8 @@ class MainActivity : AppCompatActivity() {
         nextPrayerNameTextView = findViewById(R.id.nextPrayerName)
         prayerTimesRecyclerView = findViewById<RecyclerView>(R.id.prayerTimesRecyclerView).apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
-            prayerTimeAdapter = PrayerTimeAdapter(emptyList(), this@MainActivity) // Pass empty list initially
+            prayerTimeAdapter =
+                PrayerTimeAdapter(emptyList(), this@MainActivity) // Pass empty list initially
             adapter = prayerTimeAdapter
         }
     }
@@ -141,18 +149,38 @@ class MainActivity : AppCompatActivity() {
 
     private fun updatePrayerTimesUI(prayers: List<PrayerTime>) {
         val updatedPrayers = prayers.map { prayer ->
-            if (prayer.name == "Maghrib") {
-                val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
-                val date = sdf.parse(prayer.time) ?: Date() // Use current date if parsing fails
-                val calendar = Calendar.getInstance().apply {
-                    time = date
-                    add(Calendar.MINUTE, 4)
+            when (prayer.name) {
+                "Maghrib" -> {
+                    val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
+                    val date = sdf.parse(prayer.time) ?: Date() // Use current date if parsing fails
+                    val calendar = Calendar.getInstance().apply {
+                        time = date
+                        add(Calendar.MINUTE, 4) // Add 4 minutes to Maghrib time
+                    }
+                    prayer.copy(time = sdf.format(calendar.time))
                 }
-                prayer.copy(time = sdf.format(calendar.time))
-            } else {
-                prayer
+                "Isha" -> {
+                    val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
+                    val date = sdf.parse(prayer.time) ?: Date()
+                    val calendar = Calendar.getInstance().apply {
+                        time = date
+                        add(Calendar.MINUTE, -33) // Subtract 46 minutes from Isha time
+                    }
+                    prayer.copy(time = sdf.format(calendar.time))
+                }
+                "Fajr" -> {
+                    val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
+                    val date = sdf.parse(prayer.time) ?: Date()
+                    val calendar = Calendar.getInstance().apply {
+                        time = date
+                        add(Calendar.MINUTE, 39) // Subtract 20 minutes from Fajr time
+                    }
+                    prayer.copy(time = sdf.format(calendar.time))
+                }
+                else -> prayer
             }
         }
+
         prayerTimeAdapter.updatePrayers(updatedPrayers)
         updatedPrayers.forEach { prayer ->
             prayerAlarmScheduler.schedulePrayerAlarm(prayer)

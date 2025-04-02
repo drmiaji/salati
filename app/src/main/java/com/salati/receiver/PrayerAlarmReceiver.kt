@@ -1,8 +1,9 @@
-package com.salati
+package com.salati.receiver
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.salati.service.PrayerNotificationService
 
 class PrayerAlarmReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {

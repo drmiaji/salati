@@ -1,11 +1,18 @@
-package com.salati
+package com.salati.service
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Build
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import com.salati.R
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class PrayerNotificationService {
 
@@ -31,8 +38,11 @@ class PrayerNotificationService {
             notificationManager.createNotificationChannel(channel)
         }
 
-        // Cancel any existing notifications with the same ID before showing a new one
-        notificationManager.cancel(1)
+        // Intent to mute the Azan
+        val muteIntent = Intent(context, MuteAzanReceiver::class.java).apply {
+            action = "com.salati.ACTION_MUTE_AZAN"
+        }
+        val mutePendingIntent: PendingIntent = PendingIntent.getBroadcast(context, 0, muteIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
 
         // Create the notification
         val notification = NotificationCompat.Builder(context, "prayer_channel")
@@ -40,6 +50,7 @@ class PrayerNotificationService {
             .setContentText("The time for $prayerName is now: $prayerTime")
             .setSmallIcon(R.drawable.notification) // Ensure this icon exists
             .setAutoCancel(true) // Notification will be removed when clicked
+            .addAction(R.drawable.ic_sound_off, "Mute Azan", mutePendingIntent) // Add mute action
             .build()
 
         // Show the notification
@@ -83,12 +94,19 @@ class PrayerNotificationService {
     // Get current time formatted as HH:mm (in 24-hour format)
     private fun getCurrentTime(): String {
         val currentTime = System.currentTimeMillis()
-        val dateFormat = java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault())
+        val dateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
         return dateFormat.format(currentTime)
     }
 
     // Call this method when you want to reset the notification flag (e.g., when prayer time changes)
     fun resetNotificationFlag() {
         isNotificationShown = false
+    }
+
+    class StopAdhanReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            // Handle stopping the Adhan sound
+            Toast.makeText(context, "Azan stopped", Toast.LENGTH_SHORT).show()
+        }
     }
 }

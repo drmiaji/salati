@@ -2,6 +2,8 @@
     <string name="app_name">Salati</string>
     <string name="no_prayer_time_available">No prayer time available</string>
     <string name="default_time">--:--</string>
-    <string name="prayer_time_now">Next prayer time:</string>
     <string name="audio_icon">Audio Icon</string>
+    <string name="qibla_direction">Qibla Direction: %.1f°</string>
+    <string name="prayer_time">Prayer Time</string>
+    <string name="qibla">Qibla</string>
 </resources>

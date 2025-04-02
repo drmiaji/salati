@@ -1,4 +1,4 @@
-package com.salati
+package com.salati.activity
 
 import android.Manifest
 import android.content.Intent
@@ -13,6 +13,8 @@ import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.salati.activity.MainActivity
+import com.salati.R
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
@@ -109,7 +111,7 @@ class QiblaActivity : AppCompatActivity() {
         val normalizedBearing = (bearing + 360) % 360
 
         // Update the UI with the bearing
-        qiblaDirectionText.text = "Qibla Direction: ${"%.1f".format(normalizedBearing)}°"
+        qiblaDirectionText.text = getString(R.string.qibla_direction, normalizedBearing)
 
         // Rotate the compass
         val animation = RotateAnimation(

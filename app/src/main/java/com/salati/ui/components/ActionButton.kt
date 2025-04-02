@@ -1,4 +1,4 @@
-package com.salati.compass
+package com.salati.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme

@@ -21,12 +21,12 @@
         android:theme="@style/Theme.Salati"
         tools:targetApi="33">
         <activity
-            android:name=".QiblaActivity"
+            android:name=".activity.QiblaActivity"
             android:exported="false" />
-        <activity android:name=".CompassActivity" />
+        <activity android:name=".activity.CompassActivity" />
         <!-- Main Activity -->
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
@@ -36,7 +36,7 @@
         </activity>
 
         <receiver
-            android:name=".PrayerAlarmReceiver"
+            android:name=".receiver.PrayerAlarmReceiver"
             android:enabled="true"
             android:exported="false">
             <intent-filter>
@@ -44,7 +44,7 @@
             </intent-filter>
         </receiver> <!-- Boot Receiver to restart alarms after reboot -->
         <receiver
-            android:name=".BootReceiver"
+            android:name=".receiver.BootReceiver"
             android:enabled="true"
             android:exported="false"
             tools:ignore="Instantiatable">
@@ -55,9 +55,10 @@
             </intent-filter>
         </receiver> <!-- StopAdhanReceiver to stop Adhan sound from notification -->
         <receiver
-            android:name=".PrayerNotificationService$StopAdhanReceiver"
+            android:name=".service.PrayerNotificationService$StopAdhanReceiver"
             android:enabled="true"
             android:exported="true"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
             tools:ignore="MissingClass" />
     </application>
 

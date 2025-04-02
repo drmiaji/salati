@@ -1,4 +1,4 @@
-package com.salati.compass
+package com.salati.ui.components
 
 data class RotationTarget(
     val from: Float,

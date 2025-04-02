@@ -1,4 +1,4 @@
-package com.salati
+package com.salati.utils
 
 data class PrayerTime(
     val name: String,

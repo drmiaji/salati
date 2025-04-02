@@ -1,4 +1,4 @@
-package com.salati
+package com.salati.utils
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -11,6 +11,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import androidx.core.content.edit
+import com.salati.R
 
 class PrayerTimeAdapter(private var prayers: List<PrayerTime>, private val context: Context) :
     RecyclerView.Adapter<PrayerTimeAdapter.PrayerViewHolder>() {

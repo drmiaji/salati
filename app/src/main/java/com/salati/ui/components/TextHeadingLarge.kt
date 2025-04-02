@@ -1,4 +1,4 @@
-package com.salati.compass
+package com.salati.ui.components
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -15,7 +15,7 @@ import com.salati.theme.Primary
 import com.salati.theme.White
 
 @Composable
-fun TextTitle(
+fun TextHeadingLarge(
     modifier: Modifier? = Modifier,
     text: String,
     textColor: Color? = null,
@@ -26,15 +26,15 @@ fun TextTitle(
         modifier = modifier ?: Modifier,
         text = text,
         color = textColor ?: if (isSystemInDarkTheme()) White else Black,
-        style = textStyle ?: AlifThemes.TextStyles.title,
-        textAlign = textAlign ?: TextAlign.Start,
+        textAlign = textAlign,
+        style = textStyle ?: AlifThemes.TextStyles.headingLarge
     )
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun PreviewTextTile() {
+private fun PreviewTextHeadingLarge() {
     MaterialTheme {
-        TextTitle(text = "Add new schedule", textColor = Primary)
+        TextHeadingLarge(text = "Add new schedule", textColor = Primary)
     }
 }
