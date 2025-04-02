@@ -9,4 +9,10 @@
     <color name="bsvk">#007C7C</color>
     <color name="lightBlue">#6FA3E0</color> <!-- Light blue for CardView background -->
     <color name="softBlue">#4B79A1</color>  <!-- Soft blue for inner layout -->
+    <color name="vibrantBlue">#3F51B5</color>
+    <color name="softGreen">#A8D5BA</color>
+    <color name="lightGray">#D3D3D3</color>
+    <color name="paleBlue">#B0E0E6</color>
+    <color name="lavender">#E6E6FA</color>
+    <color name="beige">#F5F5DC</color>
 </resources>

@@ -78,6 +78,8 @@ class MainActivity : AppCompatActivity() {
         requestNotificationPermissionIfNeeded()
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
+      //  val bottomIcon: BottomNavigationView = findViewById(R.id.nav_prayer_time)
+        bottomNav.itemIconTintList = null
 
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
