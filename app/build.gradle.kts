@@ -62,5 +62,6 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.ummalqura.calendar)
 
 }

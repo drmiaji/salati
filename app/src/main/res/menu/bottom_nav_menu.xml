@@ -2,10 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_prayer_time"
-        android:icon="@drawable/calendar"
+        android:icon="@drawable/ic_azan"
         android:title="@string/prayer_time" />
     <item
         android:id="@+id/nav_qibla"
         android:icon="@drawable/ic_compas"
         android:title="@string/qibla" />
+    <item
+        android:id="@+id/nav_islamic_calendar"
+        android:icon="@drawable/calendar"
+        android:title="@string/islamic_calendar" />
 </menu>

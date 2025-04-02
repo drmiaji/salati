@@ -92,7 +92,12 @@ class MainActivity : AppCompatActivity() {
                     startActivity(intent)
                     return@setOnItemSelectedListener true
                 }
-
+                R.id.nav_islamic_calendar -> {
+                    // Navigate to Islamic Calendar activity
+                    val intent = Intent(this, IslamicCalendarActivity::class.java)
+                    startActivity(intent)
+                    return@setOnItemSelectedListener true
+                }
                 else -> false
             }
         }

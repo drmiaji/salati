@@ -9,4 +9,5 @@
     <string name="current_prayer">Current Prayer</string>
     <string name="next_prayer_fajr">Next Prayer: Fajr</string>
     <string name="_00_00_00">00:00:00</string>
+    <string name="islamic_calendar">Islamic Calendar</string>
 </resources>

@@ -21,6 +21,7 @@
         android:theme="@style/Theme.Salati"
         tools:targetApi="33">
         <activity android:name=".activity.CompassActivity" />
+        <activity android:name=".activity.IslamicCalendarActivity" />
         <!-- Main Activity -->
         <activity
             android:name=".activity.MainActivity"
