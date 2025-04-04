@@ -6,18 +6,18 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.salati.ui.CompassPage
 import com.salati.ui.components.RotationTarget
-import com.salati.utils.CompassViewModel
+import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -37,12 +37,6 @@ class CompassActivity : ComponentActivity(), SensorEventListener {
     private var compassRotation: Float = 0f
     private var qiblaDirection: Float = 0f
 
-    private var currentLocation: Location? = null
-    private var rotationSensor: Sensor? = null
-    private var currentDegree = 0f
-    private var currentDegreeNeedle = 0f
-
-    private val model: CompassViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +45,7 @@ class CompassActivity : ComponentActivity(), SensorEventListener {
         magnetometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        checkLocationPermission { getLocation() }
+        checkLocationPermission()
 
         setContent {
             CompassPage(
@@ -65,33 +59,31 @@ class CompassActivity : ComponentActivity(), SensorEventListener {
         }
     }
 
-    private fun checkLocationPermission(callback: () -> Unit) {
+    private fun checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
         } else {
-            callback()
+            getLocation()
         }
     }
 
-    private fun requestLocationPermission() {
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
-    }
-
     private fun getLocation() {
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        checkLocationPermission { requestLocationPermission() }
-
-        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-            location?.let {
-                currentLocation = it
-                model.getLocationAddress(this, currentLocation!!)
-
-                sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
-                rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
-                rotationSensor?.let { sensor ->
-                    sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_GAME)
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                location?.let {
+                    updateLocationAddress(it)
+                    calculateQiblaDirection(it.latitude, it.longitude)
                 }
             }
+        }
+    }
+
+    private fun updateLocationAddress(location: Location) {
+        val geocoder = Geocoder(this, Locale.getDefault())
+        val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
+        if (addresses?.isNotEmpty() == true) {
+            locationAddress = addresses[0].getAddressLine(0)
+            updateUI()
         }
     }
 
@@ -110,66 +102,86 @@ class CompassActivity : ComponentActivity(), SensorEventListener {
         sensorManager.unregisterListener(this)
     }
 
-    override fun onSensorChanged(event: SensorEvent?) {
-        if (event == null) return
-
-        when (event.sensor.type) {
-            Sensor.TYPE_ACCELEROMETER -> {
-                System.arraycopy(event.values, 0, lastAccelerometer, 0, event.values.size)
-                lastAccelerometerSet = true
-            }
-            Sensor.TYPE_MAGNETIC_FIELD -> {
-                System.arraycopy(event.values, 0, lastMagnetometer, 0, event.values.size)
-                lastMagnetometerSet = true
-            }
+    override fun onSensorChanged(event: SensorEvent) {
+        if (event.sensor == accelerometerSensor) {
+            lowPass(event.values, lastAccelerometer)  // Smoothing accelerometer data
+            lastAccelerometerSet = true
+        } else if (event.sensor == magnetometerSensor) {
+            lowPass(event.values, lastMagnetometer)  // Smoothing magnetometer data
+            lastMagnetometerSet = true
         }
 
-        if (lastAccelerometerSet && lastMagnetometerSet && currentLocation != null) {
+        if (lastAccelerometerSet && lastMagnetometerSet) {
             val rotationMatrix = FloatArray(9)
-            val success = SensorManager.getRotationMatrix(rotationMatrix, null, lastAccelerometer, lastMagnetometer)
-            if (success) {
+            if (SensorManager.getRotationMatrix(rotationMatrix, null, lastAccelerometer, lastMagnetometer)) {
                 val orientation = FloatArray(3)
                 SensorManager.getOrientation(rotationMatrix, orientation)
-                val azimuth = Math.toDegrees(orientation[0].toDouble()).toFloat()
-                val degree = (azimuth + 360) % 360
 
-                // Qibla logic
-                val destinationLoc = Location("service Provider").apply {
-                    latitude = 21.422487
-                    longitude = 39.826206
-                }
+                // Get the azimuth in radians
+                val azimuthInRadians = orientation[0]
 
-                var bearTo = currentLocation!!.bearingTo(destinationLoc)
-                if (bearTo < 0) bearTo += 360
+                // Convert azimuth from radians to degrees
+                val azimuthInDegrees = Math.toDegrees(azimuthInRadians.toDouble()).toFloat()
 
-                var direction = bearTo - degree
-                if (direction < 0) direction += 360
+                // Normalize azimuth to ensure it stays within 0-360 degrees
+                compassRotation = (azimuthInDegrees + 360) % 360
 
-                val isFacingQibla = direction in 359.0..360.0 || direction in 0.0..1.0
-
-                // ✅ SMOOTHING: Only update if degree changed significantly
-                if (abs(currentDegree - (-degree)) > 0.5f || abs(currentDegreeNeedle - direction) > 0.5f) {
-                    // Optional low-pass filter (smoothing)
-                    val smoothDegree = (0.85f * currentDegree + 0.15f * -degree)
-                    val smoothNeedle = (0.85f * currentDegreeNeedle + 0.15f * direction)
-
-                    val qiblaRotation = RotationTarget(currentDegreeNeedle, smoothNeedle)
-                    val compassRotation = RotationTarget(currentDegree, smoothDegree)
-
-                    currentDegree = smoothDegree
-                    currentDegreeNeedle = smoothNeedle
-
-                    model.updateCompass(qiblaRotation, compassRotation, isFacingQibla)
-                }
+                updateUI()
             }
+        }
+    }
+
+    private fun lowPass(input: FloatArray, output: FloatArray) {
+        val alpha = 0.4f  // Increased smoothing factor
+        for (i in input.indices) {
+            output[i] = output[i] + alpha * (input[i] - output[i])
         }
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
 
+
+    private fun calculateQiblaDirection(latitude: Double, longitude: Double) {
+        val mKaabaLatitude = 21.422487
+        val mKaabaLongitude = 39.826206
+
+        val latRad = Math.toRadians(latitude)
+        val longRad = Math.toRadians(longitude)
+        val kaabaLatRad = Math.toRadians(mKaabaLatitude)
+        val kaabaLongRad = Math.toRadians(mKaabaLongitude)
+
+        val y = sin(kaabaLongRad - longRad) * cos(kaabaLatRad)
+        val x = cos(latRad) * sin(kaabaLatRad) - sin(latRad) * cos(kaabaLatRad) * cos(kaabaLongRad - longRad)
+
+        var bearing = Math.toDegrees(atan2(y, x))
+        bearing = (bearing + 360) % 360
+
+        qiblaDirection = bearing.toFloat()
+    }
+
     private fun isFacingQibla(): Boolean {
         val threshold = 15 // degrees
         val relativeDirection = (compassRotation - qiblaDirection + 360) % 360
         return relativeDirection < threshold || relativeDirection > 360 - threshold
+    }
+
+    private var lastCompassRotation = -1f
+
+    private fun updateUI() {
+        // Update UI only if the compass rotation has changed significantly
+        if (abs(compassRotation - lastCompassRotation) > 5f) {
+            lastCompassRotation = compassRotation
+            val relativeQiblaDirection = (qiblaDirection - compassRotation + 360) % 360
+            setContent {
+                CompassPage(
+                    isFacingQilba = isFacingQibla(),
+                    qilbaRotation = RotationTarget(0f, relativeQiblaDirection),
+                    compassRotation = RotationTarget(0f, compassRotation),
+                    locationAddress = locationAddress,
+                    goToBack = { finish() },
+                    refreshLocation = { getLocation() }
+                )
+            }
+        }
     }
 }
