@@ -17,6 +17,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.github.msarhan.ummalqura.calendar.UmmalquraCalendar
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -46,6 +47,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var prayerTimeAdapter: PrayerTimeAdapter
     private lateinit var timeUntilNextPrayerText: TextView
     private lateinit var nextPrayerNameTextView: TextView
+    private lateinit var tvDate: TextView
+    private lateinit var tvDateIslamic: TextView
 
     private var countdownTime: Long = 0 // To hold the remaining time in milliseconds
 
@@ -65,6 +68,17 @@ class MainActivity : AppCompatActivity() {
         // Initialize UI components
         initializeUI()
 
+        // Get current Gregorian date
+        val gregorianCalendar = Calendar.getInstance()
+        val gregorianDateFormat = SimpleDateFormat("EEE, dd MMMM yyyy", Locale.getDefault())
+        val gregorianDate = gregorianDateFormat.format(gregorianCalendar.time)
+        tvDate.text = gregorianDate
+
+        // Get current Hijri date
+        val hijriCalendar = UmmalquraCalendar()
+        val hijriDate = "${hijriCalendar.get(UmmalquraCalendar.DAY_OF_MONTH)} ${hijriCalendar.getDisplayName(UmmalquraCalendar.MONTH, UmmalquraCalendar.LONG, Locale.ENGLISH)} ${hijriCalendar.get(UmmalquraCalendar.YEAR)}"
+        tvDateIslamic.text = hijriDate
+
         // Initialize Fused Location and Alarm Scheduler
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         prayerAlarmScheduler = PrayerAlarmScheduler(this)
@@ -78,7 +92,6 @@ class MainActivity : AppCompatActivity() {
         requestNotificationPermissionIfNeeded()
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
-      //  val bottomIcon: BottomNavigationView = findViewById(R.id.nav_prayer_time)
         bottomNav.itemIconTintList = null
 
         bottomNav.setOnItemSelectedListener { item ->
@@ -110,6 +123,8 @@ class MainActivity : AppCompatActivity() {
         currentPrayerTime = findViewById(R.id.currentPrayerTime)
         timeUntilNextPrayerText = findViewById(R.id.timeUntilNextPrayer)
         nextPrayerNameTextView = findViewById(R.id.nextPrayerName)
+        tvDate = findViewById(R.id.tvDate)
+        tvDateIslamic = findViewById(R.id.tvDateIslamic)
         prayerTimesRecyclerView = findViewById<RecyclerView>(R.id.prayerTimesRecyclerView).apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             prayerTimeAdapter = PrayerTimeAdapter(emptyList(), this@MainActivity) // Pass empty list initially
